@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - UGMarket</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-actions a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Confirmation Section */
+        .confirmation-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .confirmation-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+        }
+
+        .confirmation-title {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .confirmation-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .order-number {
+            background: var(--light);
+            padding: 15px 30px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .order-id {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        /* Order Details */
+        .order-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+            color: var(--dark);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            color: var(--gray);
+        }
+
+        .detail-value {
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .product-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 40px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--secondary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -36px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary);
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .primary-btn:hover {
+            background: #e55f00;
+        }
+
+        .secondary-btn {
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+
+        .secondary-btn:hover {
+            background: #f8f9fa;
+        }
+
+        /* Support Section */
+        .support-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .support-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .support-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .support-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .support-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .order-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .support-options {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+            
+            .confirmation-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">UGMarket</a>
+            <div class="user-actions">
+                <a href="tel:+256700000000"><i class="fas fa-phone"></i> Support</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Confirmation Section -->
+        <section class="confirmation-section">
+            <div class="confirmation-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h1 class="confirmation-title">Order Confirmed!</h1>
+            <p class="confirmation-subtitle">Thank you for your purchase. Your order has been successfully processed.</p>
+            
+            <div class="order-number">
+                <span>Order ID: </span>
+                <span class="order-id">#UGM-2023-78945</span>
+            </div>
+        </section>
+
+        <!-- Order Details -->
+        <div class="order-details">
+            <div class="detail-card">
+                <h2 class="card-title">Order Summary</h2>
+                
+                <div class="product-item">
+                    <img src="https://via.placeholder.com/300x200?text=iPhone+12" alt="iPhone 12 Pro Max" class="product-image">
+                    <div class="product-info">
+                        <div class="product-name">iPhone 12 Pro Max 256GB - Brand New</div>
+                        <div class="product-price">UGX 3,200,000</div>
+                        <div>Quantity: 1</div>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Subtotal</span>
+                    <span class="detail-value">UGX 3,200,000</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">UGMarket Commission (10%)</span>
+                    <span class="detail-value">UGX 320,000</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Shipping</span>
+                    <span class="detail-value">UGX 15,000</span>
+                </div>
+                
+                <div class="detail-item" style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #eee;">
+                    <span class="detail-label" style="font-weight: 700;">Total</span>
+                    <span class="detail-value" style="font-weight: 700; color: var(--primary);">UGX 3,535,000</span>
+                </div>
+            </div>
+            
+            <div class="detail-card">
+                <h2 class="card-title">Delivery Information</h2>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Customer Name</span>
+                    <span class="detail-value">James K.</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Phone Number</span>
+                    <span class="detail-value">+256 712 345 678</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Delivery Address</span>
+                    <span class="detail-value">123 Main Street, Kampala, Central Division</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Payment Method</span>
+                    <span class="detail-value">MTN Mobile Money</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Payment Status</span>
+                    <span class="detail-value" style="color: var(--secondary);">Completed</span>
+                </div>
+                
+                <div class="detail-item">
+                    <span class="detail-label">Estimated Delivery</span>
+                    <span class="detail-value">2-3 business days</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Timeline -->
+        <div class="timeline">
+            <h2 class="card-title">Order Status</h2>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Order Confirmed</div>
+                    <div class="timeline-date">Today at 14:30</div>
+                    <p>Your order has been confirmed and payment processed successfully.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Preparing for Shipment</div>
+                    <div class="timeline-date">Estimated: Tomorrow</div>
+                    <p>Seller will prepare your item for shipment.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Out for Delivery</div>
+                    <div class="timeline-date">Estimated: 2 business days</div>
+                    <p>Your item will be shipped and out for delivery.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Delivered</div>
+                    <div class="timeline-date">Estimated: 3 business days</div>
+                    <p>Your item will be delivered to your address.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="index.html" class="action-btn primary-btn">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+            <a href="order-tracking.html" class="action-btn secondary-btn">
+                <i class="fas fa-map-marker-alt"></i> Track Order
+            </a>
+            <a href="search-results.html" class="action-btn secondary-btn">
+                <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </a>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-section">
+            <h2 class="support-title">Need Help With Your Order?</h2>
+            <p>Our support team is here to help with any questions or concerns you may have.</p>
+            
+            <div class="support-options">
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <div>Call Us</div>
+                        <div style="font-weight: 500;">+256 700 000 000</div>
+                    </div>
+                </div>
+                
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <div>Email Us</div>
+                        <div style="font-weight: 500;">support@ugmarket.ug</div>
+                    </div>
+                </div>
+                
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div>
+                        <div>Live Chat</div>
+                        <div style="font-weight: 500;">Available 24/7</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">UGMarket</h3>
+                    <p>Uganda's premier marketplace for buying and selling products with secure transactions and reliable delivery.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="search-results.html">Products</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Sell on UGMarket</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                        <li><a href="#">Shipping Information</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 UGMarket. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Generate random order ID
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderId = 'UGM-' + new Date().getFullYear() + '-' + Math.floor(10000 + Math.random() * 90000);
+            document.querySelector('.order-id').textContent = orderId;
+            
+            // Set current date and time
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString() + ' at ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.querySelector('.timeline-date').textContent = formattedDate;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "dev": {
+    "driver": "pg",
+    "host": "localhost",
+    "database": "ugmarket",
+    "user": "postgres",
+    "password": "your_password",
+    "port": 5432
+  },
+  "test": {
+    "driver": "pg",
+    "host": "localhost",
+    "database": "ugmarket_test",
+    "user": "postgres",
+    "password": "your_password",
+    "port": 5432
+  },
+  "production": {
+    "driver": "pg",
+    "host": "localhost",
+    "database": "ugmarket_prod",
+    "user": "postgres",
+    "password": "your_password",
+    "port": 5432
+  }
+}

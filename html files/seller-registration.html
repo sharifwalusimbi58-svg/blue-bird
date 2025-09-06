@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Registration - UGMarket</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .progress-bar {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .step-active .step-number {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .step-complete .step-number {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .step-active .step-label {
+            color: var(--primary);
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ddd;
+            z-index: 1;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,107,1,0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .terms {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e55f00;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+
+        .btn-outline:hover {
+            background: #f8f9fa;
+        }
+
+        .login-redirect {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .login-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .progress-bar {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .progress-bar::before {
+                display: none;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">UGMarket</div>
+            <div class="tagline">Start Selling to Millions of Ugandan Buyers</div>
+        </div>
+
+        <div class="content">
+            <div class="progress-bar">
+                <div class="progress-step step-active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Account</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Business</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Verification</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Account Information -->
+            <div class="form-section active" id="step1">
+                <h2 class="section-title">Create Seller Account</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" class="form-input" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" class="form-input" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-input" placeholder="+256 7XX XXX XXX" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Create Password *</label>
+                        <input type="password" class="form-input" placeholder="Minimum 8 characters" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password *</label>
+                        <input type="password" class="form-input" placeholder="Confirm your password" required>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <div></div> <!-- Spacer -->
+                    <button class="btn btn-primary" onclick="nextStep(2)">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Business Information -->
+            <div class="form-section" id="step2">
+                <h2 class="section-title">Business Information</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Business Name *</label>
+                    <input type="text" class="form-input" placeholder="Your business/trading name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Business Type *</label>
+                    <select class="form-input" required>
+                        <option value="">Select Business Type</option>
+                        <option>Individual/Sole Proprietor</option>
+                        <option>Partnership</option>
+                        <option>Limited Company</option>
+                        <option>Cooperative</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Physical Business Location</label>
+                    <input type="text" class="form-input" placeholder="Address, City, Region">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">What products will you sell? *</label>
+                    <select class="form-input" required>
+                        <option value="">Select Category</option>
+                        <option>Mobile Phones & Accessories</option>
+                        <option>Computers & Electronics</option>
+                        <option>Fashion & Clothing</option>
+                        <option>Home Appliances</option>
+                        <option>Beauty & Health</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-outline" onclick="prevStep(1)">← Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(3)">Continue →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Verification -->
+            <div class="form-section" id="step3">
+                <h2 class="section-title">Identity Verification</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">National ID Number *</label>
+                    <input type="text" class="form-input" placeholder="Enter your NIN" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload ID Document *</label>
+                    <div class="file-upload" onclick="document.getElementById('idUpload').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">Click to upload National ID</div>
+                        <div style="font-size: 0.8rem; color: var(--gray);">Max 2MB (JPG, PNG, PDF)</div>
+                        <input type="file" id="idUpload" style="display: none;" accept="image/*,.pdf">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tax Identification Number (TIN)</label>
+                    <input type="text" class="form-input" placeholder="Optional">
+                </div>
+                
+                <div class="terms">
+                    <input type="checkbox" id="agreeTerms" required>
+                    <label for="agreeTerms">I agree to the <a href="#" style="color: var(--primary);">Terms of Service</a> and <a href="#" style="color: var(--primary);">Seller Agreement</a></label>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-outline" onclick="prevStep(2)">← Back</button>
+                    <button class="btn btn-primary" onclick="registerSeller()">Complete Registration</button>
+                </div>
+            </div>
+
+            <div class="login-redirect">
+                Already have a seller account? <a href="seller-login.html" class="login-link">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form navigation
+        function nextStep(step) {
+            // Validate current step before proceeding
+            if (validateStep(step - 1)) {
+                document.querySelectorAll('.form-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById('step' + step).classList.add('active');
+                
+                // Update progress bar
+                document.querySelectorAll('.progress-step').forEach((stepEl, index) => {
+                    if (index < step - 1) {
+                        stepEl.classList.add('step-complete');
+                        stepEl.classList.remove('step-active');
+                    } else if (index === step - 1) {
+                        stepEl.classList.add('step-active');
+                        stepEl.classList.remove('step-complete');
+                    } else {
+                        stepEl.classList.remove('step-active', 'step-complete');
+                    }
+                });
+            }
+        }
+
+        function prevStep(step) {
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('step' + step).classList.add('active');
+            
+            // Update progress bar
+            document.querySelectorAll('.progress-step').forEach((stepEl, index) => {
+                if (index < step - 1) {
+                    stepEl.classList.add('step-complete');
+                    stepEl.classList.remove('step-active');
+                } else if (index === step - 1) {
+                    stepEl.classList.add('step-active');
+                    stepEl.classList.remove('step-complete');
+                } else {
+                    stepEl.classList.remove('step-active', 'step-complete');
+                }
+            });
+        }
+
+        // Form validation
+        function validateStep(step) {
+            const currentStep = document.getElementById('step' + step);
+            const inputs = currentStep.querySelectorAll('input[required], select[required]');
+            let valid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value) {
+                    input.style.borderColor = 'red';
+                    valid = false;
+                    
+                    // Reset border color when user starts typing
+                    input.addEventListener('input', function() {
+                        this.style.borderColor = '#ddd';
+                    });
+                }
+            });
+            
+            if (!valid) {
+                alert('Please fill in all required fields');
+            }
+            
+            return valid;
+        }
+
+        // Seller registration
+        function registerSeller() {
+            if (validateStep(3)) {
+                // Simulate registration process
+                const btn = document.querySelector('#step3 .btn-primary');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    // Simulate successful registration
+                    alert('Registration successful! Your account is pending verification.');
+                    window.location.href = 'seller-dashboard.html';
+                }, 2000);
+            }
+        }
+
+        // File upload handling
+        document.getElementById('idUpload').addEventListener('change', function(e) {
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be less than 2MB');
+                    this.value = '';
+                }
+            }
+        });
+    </script>
+    
+</body>
+</html>

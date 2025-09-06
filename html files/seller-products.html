@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Products | UGMarket Seller</title>
+    <style>
+        /* ==== UGMarket Product Management Styles ==== */
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --dark: #2E2E2E;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: var(--dark);
+        }
+        
+        .seller-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Seller Sidebar */
+        .seller-sidebar {
+            background: var(--dark);
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .seller-profile {
+            text-align: center;
+            padding: 0 15px 20px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .seller-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .seller-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .seller-status {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .nav-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,107,1,0.2);
+            color: white;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .product-main {
+            padding: 25px;
+        }
+        
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+        
+        .add-product-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .add-product-btn:hover {
+            background: #E05D00;
+        }
+        
+        /* Product Filters */
+        .product-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 180px;
+        }
+        
+        .filter-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--gray);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            display: flex;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+        }
+        
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-title {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-btn {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .edit-btn:hover {
+            background: #FFF0E6;
+        }
+        
+        .delete-btn {
+            background: white;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        
+        .delete-btn:hover {
+            background: #F8D7DA;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .empty-text {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .seller-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .seller-sidebar {
+                display: none;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .product-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .product-filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="seller-container">
+        <!-- Seller Sidebar -->
+        <aside class="seller-sidebar">
+            <div class="seller-profile">
+                <img src="https://via.placeholder.com/150?text=GH" alt="Seller" class="seller-avatar">
+                <h3 class="seller-name">GadgetHub Uganda</h3>
+                <span class="seller-status">Verified</span>
+                <p>UGMarket Seller</p>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="seller-dashboard.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="seller-products.html" class="nav-item active">
+                    <i class="fas fa-shopping-bag"></i>
+                    My Products
+                </a>
+                <a href="seller-returns.html" class="nav-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Earnings
+                </a>
+                <a href="seller-orders.html" class="nav-item">
+                    <i class="fas fa-truck"></i>
+                    Orders
+                </a>
+                <a href="seller-analytics.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                 <a href="generate-return-label.html" class="nav-item">
+                <i class="fas fa-tag"></i>
+                <span>Shipping Labels</span>
+             </a>
+             <a href="dispute-resolution.html" class="nav-item">
+                <i class="fas fa-handshake"></i>
+                <span>Dispute Resolution</span>
+             </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="product-main">
+            <div class="product-header">
+                <h1 class="page-title">My Products</h1>
+                <button class="add-product-btn">
+                    <i class="fas fa-plus"></i>
+                    Add Product
+                </button>
+            </div>
+            
+            <!-- Product Filters -->
+            <div class="product-filters">
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select">
+                        <option>All Categories</option>
+                        <option>Mobile Phones</option>
+                        <option>Computers</option>
+                        <option>Electronics</option>
+                        <option selected>Fashion</option>
+                        <option>Home Appliances</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select">
+                        <option>All Statuses</option>
+                        <option selected>Active</option>
+                        <option>Pending</option>
+                        <option>Sold Out</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sort By</label>
+                    <select class="filter-select">
+                        <option>Newest First</option>
+                        <option>Oldest First</option>
+                        <option>Price: High to Low</option>
+                        <option>Price: Low to High</option>
+                    </select>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search products...">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <span class="product-badge">Active</span>
+                    <img src="https://via.placeholder.com/400x300?text=iPhone+12" alt="iPhone 12" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">iPhone 12 Pro Max 256GB - Brand New (Unlocked)</h3>
+                        <div class="product-price">UGX 3,450,000</div>
+                        <div class="product-meta">
+                            <span>12 sold</span>
+                            <span>3 in stock</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <span class="product-badge">Active</span>
+                    <img src="https://via.placeholder.com/400x300?text=Samsung+S21" alt="Samsung S21" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Samsung Galaxy S21 Ultra 5G 128GB</h3>
+                        <div class="product-price">UGX 2,800,000</div>
+                        <div class="product-meta">
+                            <span>8 sold</span>
+                            <span>5 in stock</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <span class="product-badge" style="background: var(--warning);">Low Stock</span>
+                    <img src="https://via.placeholder.com/400x300?text=Tecno+Camon" alt="Tecno Camon" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Tecno Camon 16 Premier 128GB - New</h3>
+                        <div class="product-price">UGX 950,000</div>
+                        <div class="product-meta">
+                            <span>15 sold</span>
+                            <span>1 in stock</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <span class="product-badge" style="background: var(--danger);">Sold Out</span>
+                    <img src="https://via.placeholder.com/400x300?text=Huawei+P40" alt="Huawei P40" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Huawei P40 Lite 128GB - Used 6 months</h3>
+                        <div class="product-price">UGX 700,000</div>
+                        <div class="product-meta">
+                            <span>6 sold</span>
+                            <span>0 in stock</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <span class="product-badge">Active</span>
+                    <img src="https://via.placeholder.com/400x300?text=Redmi+Note" alt="Redmi Note" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Redmi Note 10 Pro 128GB - Brand New</h3>
+                        <div class="product-price">UGX 1,100,000</div>
+                        <div class="product-meta">
+                            <span>9 sold</span>
+                            <span>7 in stock</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <span class="product-badge" style="background: var(--gray);">Pending</span>
+                    <img src="https://via.placeholder.com/400x300?text=Nokia+5.4" alt="Nokia 5.4" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Nokia 5.4 64GB - Refurbished</h3>
+                        <div class="product-price">UGX 550,000</div>
+                        <div class="product-meta">
+                            <span>0 sold</span>
+                            <span>3 in stock</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Product Management Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add Product Button
+            document.querySelector('.add-product-btn').addEventListener('click', function() {
+                alert('Redirecting to product creation form');
+                // In full implementation, would redirect to add product page
+                window.location.href = 'add-product.html';
+            });
+            
+            // Edit Product Buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productCard = this.closest('.product-card');
+                    const productTitle = productCard.querySelector('.product-title').textContent;
+                    alert(`Editing product: ${productTitle}`);
+                    // In full implementation, would open edit form
+                });
+            });
+            
+            // Delete Product Buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productCard = this.closest('.product-card');
+                    const productTitle = productCard.querySelector('.product-title').textContent;
+                    
+                    if (confirm(`Are you sure you want to delete "${productTitle}"?`)) {
+                        productCard.style.opacity = '0.5';
+                        alert('Product marked for deletion (would be deleted after confirmation in full implementation)');
+                    }
+                });
+            });
+            
+            // Filter Functionality
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    console.log('Filtering by:', this.value);
+                    // In full implementation, would filter products
+                });
+            });
+            
+            // Search Functionality
+            document.querySelector('.search-btn').addEventListener('click', function() {
+                const query = document.querySelector('.search-input').value;
+                console.log('Searching for:', query);
+                // In full implementation, would search products
+            });
+            
+            // Mobile Menu Toggle (would be implemented in full version)
+            const mobileToggle = document.createElement('div');
+            mobileToggle.className = 'mobile-menu-toggle';
+            mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            document.querySelector('.product-header').prepend(mobileToggle);
+        });
+    </script>
+</body>
+</html>
