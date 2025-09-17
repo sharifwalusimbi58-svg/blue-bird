@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management | UGMarket Seller</title>
+    <style>
+        /* ==== UGMarket Order Management Styles ==== */
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --dark: #2E2E2E;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --info: #17A2B8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: var(--dark);
+        }
+        
+        .seller-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Seller Sidebar */
+        .seller-sidebar {
+            background: var(--dark);
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .seller-profile {
+            text-align: center;
+            padding: 0 15px 20px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .seller-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .seller-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .seller-status {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .nav-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,107,1,0.2);
+            color: white;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .order-main {
+            padding: 25px;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+        
+        .order-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-pill {
+            background: white;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-pill.unfulfilled {
+            border-left: 3px solid var(--danger);
+        }
+        
+        .stat-pill.fulfilled {
+            border-left: 3px solid var(--success);
+        }
+        
+        /* Order Filters */
+        .order-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 180px;
+        }
+        
+        .filter-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--gray);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            display: flex;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+        }
+        
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        /* Orders Table */
+        .orders-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .order-id {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .customer-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .product-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-unfulfilled {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-fulfilled {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .status-shipped {
+            background: #CCE5FF;
+            color: #004085;
+        }
+        
+        .status-cancelled {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .fulfill-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .fulfill-btn:hover {
+            background: #E05D00;
+        }
+        
+        .tracking-btn {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .tracking-btn:hover {
+            background: #FFF0E6;
+        }
+        
+        /* Commission Breakdown */
+        .commission-breakdown {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .commission-value {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .page-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .seller-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .seller-sidebar {
+                display: none;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .order-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .order-filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="seller-container">
+        <!-- Seller Sidebar -->
+        <aside class="seller-sidebar">
+            <div class="seller-profile">
+                <img src="https://via.placeholder.com/150?text=GH" alt="Seller" class="seller-avatar">
+                <h3 class="seller-name">GadgetHub Uganda</h3>
+                <span class="seller-status">Verified</span>
+                <p>UGMarket Seller</p>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="seller-dashboard.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="seller-products.html" class="nav-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    My Products
+                </a>
+                <a href="seller-orders.html" class="nav-item active">
+                    <i class="fas fa-truck"></i>
+                    Orders
+                </a>
+                <a href="seller-returns.html" class="nav-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Earnings
+                </a>
+                <a href="seller-analytics.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+
+            <a href="generate-return-label.html" class="nav-item">
+                <i class="fas fa-tag"></i>
+                <span>Shipping Labels</span>
+            </a>
+            <a href="dispute-resolution.html" class="nav-item">
+                <i class="fas fa-handshake"></i>
+                <span>Dispute Resolution</span>
+            </a>
+
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="order-main">
+            <div class="order-header">
+                <h1 class="page-title">Order Management</h1>
+                <div class="order-stats">
+                    <div class="stat-pill unfulfilled">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>5 Unfulfilled</span>
+                    </div>
+                    <div class="stat-pill fulfilled">
+                        <i class="fas fa-check-circle"></i>
+                        <span>12 Fulfilled</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Filters -->
+            <div class="order-filters">
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select">
+                        <option>All Orders</option>
+                        <option selected>Unfulfilled</option>
+                        <option>Fulfilled</option>
+                        <option>Shipped</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <select class="filter-select">
+                        <option>Last 7 Days</option>
+                        <option selected>Last 30 Days</option>
+                        <option>This Month</option>
+                        <option>Custom Range</option>
+                    </select>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search orders...">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Orders Table -->
+            <div class="orders-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Order 1 -->
+                        <tr>
+                            <td><a href="#" class="order-id">#UGM-2841</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">JK</div>
+                                <span>James K.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=iPhone" class="product-image">
+                                <span>iPhone 12 Pro Max</span>
+                            </td>
+                            <td>15 Mar 2023</td>
+                            <td>
+                                UGX 3,450,000
+                                <div class="commission-breakdown">
+                                    Fee: <span class="commission-value">-UGX 345,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-unfulfilled">Unfulfilled</span>
+                            </td>
+                            <td>
+                                <button class="action-btn fulfill-btn">Fulfill</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Order 2 -->
+                        <tr>
+                            <td><a href="#" class="order-id">#UGM-2837</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">SN</div>
+                                <span>Sarah N.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Samsung" class="product-image">
+                                <span>Samsung S21 Ultra</span>
+                            </td>
+                            <td>14 Mar 2023</td>
+                            <td>
+                                UGX 2,800,000
+                                <div class="commission-breakdown">
+                                    Fee: <span class="commission-value">-UGX 280,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-shipped">Shipped</span>
+                            </td>
+                            <td>
+                                <button class="action-btn tracking-btn">Track</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Order 3 -->
+                        <tr>
+                            <td><a href="#" class="order-id">#UGM-2832</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">RM</div>
+                                <span>Robert M.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Tecno" class="product-image">
+                                <span>Tecno Camon 16</span>
+                            </td>
+                            <td>13 Mar 2023</td>
+                            <td>
+                                UGX 950,000
+                                <div class="commission-breakdown">
+                                    Fee: <span class="commission-value">-UGX 95,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-fulfilled">Fulfilled</span>
+                            </td>
+                            <td>
+                                <button class="action-btn tracking-btn">Details</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Order 4 -->
+                        <tr>
+                            <td><a href="#" class="order-id">#UGM-2829</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">GL</div>
+                                <span>Grace L.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Huawei" class="product-image">
+                                <span>Huawei P40 Lite</span>
+                            </td>
+                            <td>12 Mar 2023</td>
+                            <td>
+                                UGX 700,000
+                                <div class="commission-breakdown">
+                                    Fee: <span class="commission-value">-UGX 70,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-cancelled">Cancelled</span>
+                            </td>
+                            <td>
+                                <button class="action-btn tracking-btn">Details</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Order 5 -->
+                        <tr>
+                            <td><a href="#" class="order-id">#UGM-2825</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">DP</div>
+                                <span>David P.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Redmi" class="product-image">
+                                <span>Redmi Note 10 Pro</span>
+                            </td>
+                            <td>10 Mar 2023</td>
+                            <td>
+                                UGX 1,100,000
+                                <div class="commission-breakdown">
+                                    Fee: <span class="commission-value">-UGX 110,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-fulfilled">Fulfilled</span>
+                            </td>
+                            <td>
+                                <button class="action-btn tracking-btn">Details</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="page-btn"><i class="fas fa-chevron-left"></i></div>
+                <div class="page-btn active">1</div>
+                <div class="page-btn">2</div>
+                <div class="page-btn">3</div>
+                <div class="page-btn"><i class="fas fa-chevron-right"></i></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Order Management Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fulfill Order Buttons
+            document.querySelectorAll('.fulfill-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const orderRow = this.closest('tr');
+                    const orderId = orderRow.querySelector('.order-id').textContent;
+                    
+                    if (confirm(`Mark order ${orderId} as fulfilled?`)) {
+                        // Update status in UI
+                        const statusBadge = orderRow.querySelector('.status-badge');
+                        statusBadge.className = 'status-badge status-fulfilled';
+                        statusBadge.textContent = 'Fulfilled';
+                        
+                        // Change button
+                        this.className = 'action-btn tracking-btn';
+                        this.textContent = 'Track';
+                        
+                        alert('Order marked as fulfilled! Next: arrange shipping.');
+                    }
+                });
+            });
+            
+            // Tracking/Details Buttons
+            document.querySelectorAll('.tracking-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const orderRow = this.closest('tr');
+                    const orderId = orderRow.querySelector('.order-id').textContent;
+                    alert(`Showing details for order ${orderId}`);
+                    // In full implementation, would show order details modal
+                });
+            });
+            
+            // Filter Functionality
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    console.log('Filtering by:', this.value);
+                    // In full implementation, would filter orders
+                });
+            });
+            
+            // Search Functionality
+            document.querySelector('.search-btn').addEventListener('click', function() {
+                const query = document.querySelector('.search-input').value;
+                console.log('Searching for:', query);
+                // In full implementation, would search orders
+            });
+            
+            // Pagination
+            document.querySelectorAll('.page-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.classList.contains('active')) return;
+                    
+                    document.querySelector('.page-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    // In full implementation, would load the page
+                });
+            });
+            
+            // Mobile Menu Toggle (would be implemented in full version)
+            const mobileToggle = document.createElement('div');
+            mobileToggle.className = 'mobile-menu-toggle';
+            mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            document.querySelector('.order-header').prepend(mobileToggle);
+        });
+    </script>
+</body>
+</html>

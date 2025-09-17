@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returns & Refunds | UGMarket Seller</title>
+    <style>
+        /* ==== UGMarket Returns Management Styles ==== */
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --dark: #2E2E2E;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --info: #17A2B8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: var(--dark);
+        }
+        
+        .seller-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Seller Sidebar */
+        .seller-sidebar {
+            background: var(--dark);
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .seller-profile {
+            text-align: center;
+            padding: 0 15px 20px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .seller-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .seller-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .seller-status {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .nav-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,107,1,0.2);
+            color: white;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .returns-main {
+            padding: 25px;
+        }
+        
+        .returns-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+        
+        .returns-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-pill {
+            background: white;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-pill.pending {
+            border-left: 3px solid var(--warning);
+        }
+        
+        .stat-pill.approved {
+            border-left: 3px solid var(--info);
+        }
+        
+        .stat-pill.completed {
+            border-left: 3px solid var(--success);
+        }
+        
+        .stat-pill.rejected {
+            border-left: 3px solid var(--danger);
+        }
+        
+        /* Returns Filters */
+        .returns-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 180px;
+        }
+        
+        .filter-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--gray);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            display: flex;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+        }
+        
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        /* Returns Table */
+        .returns-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .return-id {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .customer-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .product-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background: #CCE5FF;
+            color: #004085;
+        }
+        
+        .status-completed {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .approve-btn {
+            background: var(--success);
+            color: white;
+        }
+        
+        .approve-btn:hover {
+            background: #218838;
+        }
+        
+        .reject-btn {
+            background: white;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+        
+        .reject-btn:hover {
+            background: #F8D7DA;
+        }
+        
+        .view-btn {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .view-btn:hover {
+            background: #FFF0E6;
+        }
+        
+        /* Commission Adjustment */
+        .commission-note {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .commission-refund {
+            color: var(--danger);
+            font-weight: 500;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .page-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .seller-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .seller-sidebar {
+                display: none;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .returns-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .returns-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .returns-filters {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="seller-container">
+        <!-- Seller Sidebar -->
+        <aside class="seller-sidebar">
+            <div class="seller-profile">
+                <img src="https://via.placeholder.com/150?text=GH" alt="Seller" class="seller-avatar">
+                <h3 class="seller-name">GadgetHub Uganda</h3>
+                <span class="seller-status">Verified</span>
+                <p>UGMarket Seller</p>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="seller-dashboard.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="seller-products.html" class="nav-item">
+                    <i class="fas fa-shopping-bag"></i>
+                    Products
+                </a>
+                <a href="seller-orders.html" class="nav-item">
+                    <i class="fas fa-truck"></i>
+                    Orders
+                </a>
+                <a href="seller-returns.html" class="nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    Returns
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Earnings
+                </a>
+
+
+                 <a href="generate-return-label.html" class="nav-item">
+                <i class="fas fa-tag"></i>
+                <span>Shipping Labels</span>
+            </a>
+            <a href="dispute-resolution.html" class="nav-item">
+                <i class="fas fa-handshake"></i>
+                <span>Dispute Resolution</span>
+            </a>
+
+                <a href="#" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="returns-main">
+            <div class="returns-header">
+                <h1 class="page-title">Returns & Refunds</h1>
+                <div class="returns-stats">
+                    <div class="stat-pill pending">
+                        <i class="fas fa-clock"></i>
+                        <span>3 Pending</span>
+                    </div>
+                    <div class="stat-pill approved">
+                        <i class="fas fa-check-circle"></i>
+                        <span>2 Approved</span>
+                    </div>
+                    <div class="stat-pill completed">
+                        <i class="fas fa-check-double"></i>
+                        <span>5 Completed</span>
+                    </div>
+                    <div class="stat-pill rejected">
+                        <i class="fas fa-times-circle"></i>
+                        <span>1 Rejected</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Returns Filters -->
+            <div class="returns-filters">
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select">
+                        <option>All Returns</option>
+                        <option selected>Pending</option>
+                        <option>Approved</option>
+                        <option>Completed</option>
+                        <option>Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <select class="filter-select">
+                        <option>Last 7 Days</option>
+                        <option selected>Last 30 Days</option>
+                        <option>This Month</option>
+                        <option>Custom Range</option>
+                    </select>
+                </div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search returns...">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Returns Table -->
+            <div class="returns-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Return ID</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Reason</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Return 1 -->
+                        <tr>
+                            <td><a href="#" class="return-id">#UGR-2841</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">JK</div>
+                                <span>James K.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=iPhone" class="product-image">
+                                <span>iPhone 12 Pro Max</span>
+                            </td>
+                            <td>Faulty device</td>
+                            <td>
+                                UGX 3,450,000
+                                <div class="commission-note">
+                                    Fee refund: <span class="commission-refund">+UGX 345,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-pending">Pending</span>
+                            </td>
+                            <td>
+                                <button class="action-btn approve-btn">Approve</button>
+                                <button class="action-btn reject-btn">Reject</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Return 2 -->
+                        <tr>
+                            <td><a href="#" class="return-id">#UGR-2837</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">SN</div>
+                                <span>Sarah N.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Samsung" class="product-image">
+                                <span>Samsung S21 Ultra</span>
+                            </td>
+                            <td>Wrong item shipped</td>
+                            <td>
+                                UGX 2,800,000
+                                <div class="commission-note">
+                                    Fee refund: <span class="commission-refund">+UGX 280,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-approved">Approved</span>
+                            </td>
+                            <td>
+                                <button class="action-btn view-btn">Track Return</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Return 3 -->
+                        <tr>
+                            <td><a href="#" class="return-id">#UGR-2832</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">RM</div>
+                                <span>Robert M.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Tecno" class="product-image">
+                                <span>Tecno Camon 16</span>
+                            </td>
+                            <td>Changed mind</td>
+                            <td>
+                                UGX 950,000
+                                <div class="commission-note">
+                                    Fee refund: <span class="commission-refund">+UGX 95,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-completed">Completed</span>
+                            </td>
+                            <td>
+                                <button class="action-btn view-btn">Details</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Return 4 -->
+                        <tr>
+                            <td><a href="#" class="return-id">#UGR-2829</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">GL</div>
+                                <span>Grace L.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Huawei" class="product-image">
+                                <span>Huawei P40 Lite</span>
+                            </td>
+                            <td>Item not as described</td>
+                            <td>
+                                UGX 700,000
+                                <div class="commission-note">
+                                    Fee refund: <span class="commission-refund">+UGX 70,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-rejected">Rejected</span>
+                            </td>
+                            <td>
+                                <button class="action-btn view-btn">Details</button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Return 5 -->
+                        <tr>
+                            <td><a href="#" class="return-id">#UGR-2825</a></td>
+                            <td class="customer-info">
+                                <div class="customer-avatar">DP</div>
+                                <span>David P.</span>
+                            </td>
+                            <td class="product-info">
+                                <img src="https://via.placeholder.com/100?text=Redmi" class="product-image">
+                                <span>Redmi Note 10 Pro</span>
+                            </td>
+                            <td>Damaged in transit</td>
+                            <td>
+                                UGX 1,100,000
+                                <div class="commission-note">
+                                    Fee refund: <span class="commission-refund">+UGX 110,000</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-pending">Pending</span>
+                            </td>
+                            <td>
+                                <button class="action-btn approve-btn">Approve</button>
+                                <button class="action-btn reject-btn">Reject</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="page-btn"><i class="fas fa-chevron-left"></i></div>
+                <div class="page-btn active">1</div>
+                <div class="page-btn">2</div>
+                <div class="page-btn">3</div>
+                <div class="page-btn"><i class="fas fa-chevron-right"></i></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Returns Management Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Approve Return
+            document.querySelectorAll('.approve-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const returnRow = this.closest('tr');
+                    const returnId = returnRow.querySelector('.return-id').textContent;
+                    
+                    if (confirm(`Approve return ${returnId}? This will initiate refund and return process.`)) {
+                        // Update status in UI
+                        const statusBadge = returnRow.querySelector('.status-badge');
+                        statusBadge.className = 'status-badge status-approved';
+                        statusBadge.textContent = 'Approved';
+                        
+                        // Change buttons
+                        const buttonsCell = returnRow.querySelector('td:last-child');
+                        buttonsCell.innerHTML = '<button class="action-btn view-btn">Track Return</button>';
+                        
+                        alert('Return approved! The 10% commission will be credited back to your account.');
+                    }
+                });
+            });
+            
+            // Reject Return
+            document.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const returnRow = this.closest('tr');
+                    const returnId = returnRow.querySelector('.return-id').textContent;
+                    
+                    if (confirm(`Reject return ${returnId}? Please ensure you have a valid reason.`)) {
+                        // Update status in UI
+                        const statusBadge = returnRow.querySelector('.status-badge');
+                        statusBadge.className = 'status-badge status-rejected';
+                        statusBadge.textContent = 'Rejected';
+                        
+                        // Change buttons
+                        const buttonsCell = returnRow.querySelector('td:last-child');
+                        buttonsCell.innerHTML = '<button class="action-btn view-btn">Details</button>';
+                        
+                        alert('Return rejected. Please contact the buyer to explain the reason.');
+                    }
+                });
+            });
+            
+            // View/Details Buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const returnRow = this.closest('tr');
+                    const returnId = returnRow.querySelector('.return-id').textContent;
+                    alert(`Showing details for return ${returnId}`);
+                    // In full implementation, would show return details modal
+                });
+            });
+            
+            // Filter Functionality
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    console.log('Filtering by:', this.value);
+                    // In full implementation, would filter returns
+                });
+            });
+            
+            // Search Functionality
+            document.querySelector('.search-btn').addEventListener('click', function() {
+                const query = document.querySelector('.search-input').value;
+                console.log('Searching for:', query);
+                // In full implementation, would search returns
+            });
+            
+            // Pagination
+            document.querySelectorAll('.page-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.classList.contains('active')) return;
+                    
+                    document.querySelector('.page-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    // In full implementation, would load the page
+                });
+            });
+            
+            // Mobile Menu Toggle (would be implemented in full version)
+            const mobileToggle = document.createElement('div');
+            mobileToggle.className = 'mobile-menu-toggle';
+            mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            document.querySelector('.returns-header').prepend(mobileToggle);
+        });
+    </script>
+</body>
+</html>

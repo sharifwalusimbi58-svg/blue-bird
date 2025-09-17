@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking - UGMarket</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-actions a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Tracking Header */
+        .tracking-header {
+            text-align: center;
+            padding: 40px 0 20px;
+        }
+
+        .tracking-title {
+            font-size: 2.2rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .tracking-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        /* Search Box */
+        .search-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .search-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--primary);
+            border-radius: 6px 0 0 6px;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-id {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .status-processing {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-shipped {
+            background: #CCE5FF;
+            color: #004085;
+        }
+
+        .status-delivered {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .card-value {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        /* Tracking Timeline */
+        .tracking-timeline {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--secondary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -36px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary);
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .timeline-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .timeline-desc {
+            font-weight: 500;
+        }
+
+        /* Order Details */
+        .order-details {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .details-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .product-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-card {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        /* Support Section */
+        .support-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .support-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .support-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .support-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .support-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .primary-btn:hover {
+            background: #e55f00;
+        }
+
+        .secondary-btn {
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+
+        .secondary-btn:hover {
+            background: #f8f9fa;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .summary-grid, .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .support-options {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                border-radius: 6px;
+                margin-bottom: 10px;
+            }
+            
+            .search-btn {
+                border-radius: 6px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">UGMarket</a>
+            <div class="user-actions">
+                <a href="seller-dashboard.html">Seller Dashboard</a>
+                <a href="#">Help Center</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Tracking Header -->
+        <div class="tracking-header">
+            <h1 class="tracking-title">Track Your Order</h1>
+            <p class="tracking-subtitle">Enter your order ID to check the status of your purchase</p>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <h2 class="search-title">Find Your Order</h2>
+            <div class="search-form">
+                <input type="text" class="search-input" placeholder="Enter Order ID (e.g. UGM-2023-78945)" id="orderInput">
+                <button class="search-btn" onclick="trackOrder()">
+                    <i class="fas fa-search"></i> Track Order
+                </button>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary" id="orderSummary">
+            <div class="summary-header">
+                <div class="order-id">Order #UGM-2023-78945</div>
+                <div class="order-status status-shipped">Shipped</div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-title">ORDER DATE</div>
+                    <div class="card-value">October 15, 2023</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-title">ESTIMATED DELIVERY</div>
+                    <div class="card-value">October 18, 2023</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-title">TOTAL AMOUNT</div>
+                    <div class="card-value">UGX 3,535,000</div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-title">PAYMENT METHOD</div>
+                    <div class="card-value">MTN Mobile Money</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tracking Timeline -->
+        <div class="tracking-timeline" id="trackingTimeline">
+            <h2 class="timeline-title">Order Status</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">October 15, 2023 - 14:30</div>
+                        <div class="timeline-desc">Order confirmed and payment processed</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">October 16, 2023 - 09:15</div>
+                        <div class="timeline-desc">Seller packaged your item</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">October 16, 2023 - 14:45</div>
+                        <div class="timeline-desc">Picked up by delivery partner</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">October 17, 2023 - 10:30</div>
+                        <div class="timeline-desc">Out for delivery in Kampala area</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="order-details" id="orderDetails">
+            <h2 class="details-title">Order Details</h2>
+            
+            <div class="product-item">
+                <img src="https://via.placeholder.com/300x200?text=iPhone+12" alt="iPhone 12 Pro Max" class="product-image">
+                <div class="product-info">
+                    <div class="product-name">iPhone 12 Pro Max 256GB - Brand New</div>
+                    <div class="product-price">UGX 3,200,000</div>
+                    <div>Quantity: 1</div>
+                </div>
+            </div>
+            
+            <div class="details-grid">
+                <div class="detail-card">
+                    <div class="card-title">SHIPPING ADDRESS</div>
+                    <div class="card-value">
+                        James K.<br>
+                        123 Main Street<br>
+                        Kampala, Central Division<br>
+                        +256 712 345 678
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="card-title">BILLING ADDRESS</div>
+                    <div class="card-value">
+                        Same as shipping address<br>
+                        Paid via MTN Mobile Money
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="card-title">SHIPPING METHOD</div>
+                    <div class="card-value">
+                        Standard Delivery<br>
+                        Estimated 2-3 business days
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="card-title">ORDER SUMMARY</div>
+                    <div class="card-value">
+                        Subtotal: UGX 3,200,000<br>
+                        Shipping: UGX 15,000<br>
+                        Commission: UGX 320,000<br>
+                        <strong>Total: UGX 3,535,000</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-section" id="supportSection">
+            <h2 class="support-title">Need Help With Your Order?</h2>
+            <p>Our support team is here to help with any questions or concerns you may have.</p>
+            
+            <div class="support-options">
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <div>Call Us</div>
+                        <div style="font-weight: 500;">+256 700 000 000</div>
+                    </div>
+                </div>
+                
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <div>Email Us</div>
+                        <div style="font-weight: 500;">support@ugmarket.ug</div>
+                    </div>
+                </div>
+                
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div>
+                        <div>Live Chat</div>
+                        <div style="font-weight: 500;">Available 24/7</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons" id="actionButtons" style="display: none;">
+            <a href="index.html" class="action-btn primary-btn">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+            <a href="search-results.html" class="action-btn secondary-btn">
+                <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </a>
+            <button class="action-btn secondary-btn" onclick="printOrder()">
+                <i class="fas fa-print"></i> Print Details
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">UGMarket</h3>
+                    <p>Uganda's premier marketplace for buying and selling products with secure transactions and reliable delivery.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="search-results.html">Products</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Sell on UGMarket</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                        <li><a href="#">Shipping Information</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 UGMarket. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Track order function
+        function trackOrder() {
+            const orderId = document.getElementById('orderInput').value.trim();
+            
+            if (!orderId) {
+                alert('Please enter an order ID');
+                return;
+            }
+            
+            // Simulate API call to fetch order details
+            setTimeout(() => {
+                // Show all sections
+                document.getElementById('orderSummary').style.display = 'block';
+                document.getElementById('trackingTimeline').style.display = 'block';
+                document.getElementById('orderDetails').style.display = 'block';
+                document.getElementById('supportSection').style.display = 'block';
+                document.getElementById('actionButtons').style.display = 'flex';
+                
+                // Scroll to results
+                document.getElementById('orderSummary').scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        }
+        
+        // Print order details
+        function printOrder() {
+            window.print();
+        }
+        
+        // Allow Enter key to trigger search
+        document.getElementById('orderInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                trackOrder();
+            }
+        });
+    </script>
+</body>
+</html>

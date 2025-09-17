@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Return Label - UGMarket Seller</title>
+    <style>
+        /* ==== UGMarket Label Generator Styles ==== */
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --dark: #2E2E2E;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --info: #17A2B8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: var(--dark);
+            padding: 20px;
+        }
+        
+        .label-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+        
+        .back-btn {
+            padding: 8px 15px;
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-btn:hover {
+            background: var(--light-gray);
+        }
+        
+        /* Main Content Layout */
+        .label-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 25px;
+        }
+        
+        /* Form Section */
+        .form-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,107,1,0.1);
+        }
+        
+        .return-details {
+            background: var(--light-gray);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .detail-label {
+            color: var(--gray);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .carrier-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .carrier-option {
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .carrier-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .carrier-option.selected {
+            border-color: var(--primary);
+            background: rgba(255,107,1,0.1);
+        }
+        
+        .carrier-logo {
+            width: 60px;
+            height: 30px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            background: #e55f00;
+        }
+        
+        /* Preview Section */
+        .preview-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+        }
+        
+        .label-preview {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            background: white;
+        }
+        
+        .preview-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .preview-title {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .preview-subtitle {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .preview-content {
+            font-size: 0.9rem;
+        }
+        
+        .preview-row {
+            margin-bottom: 12px;
+            display: flex;
+        }
+        
+        .preview-label {
+            min-width: 100px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .preview-value {
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        
+        .barcode-placeholder {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            font-family: monospace;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+        
+        .dropoff-info {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        
+        .dropoff-title {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .dropoff-list {
+            list-style: none;
+        }
+        
+        .dropoff-list li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dropoff-list li:before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .print-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .print-btn:hover {
+            background: #e55f00;
+        }
+        
+        .email-btn {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .email-btn:hover {
+            background: #004a18;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .label-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-section {
+                position: static;
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .carrier-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="label-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Generate Return Label</h1>
+            <a href="seller-returns.html" class="back-btn">
+                ← Back to Returns
+            </a>
+        </div>
+        
+        <!-- Main Content Layout -->
+        <div class="label-layout">
+            <!-- Form Section -->
+            <div class="form-section">
+                <h2 class="section-title">Return Information</h2>
+                
+                <div class="return-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Return ID:</span>
+                        <span class="detail-value">#UGR-2841</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Customer:</span>
+                        <span class="detail-value">James K.</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Product:</span>
+                        <span class="detail-value">iPhone 12 Pro Max</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Reason:</span>
+                        <span class="detail-value">Faulty device</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Shipping Carrier</label>
+                    <div class="carrier-options">
+                        <div class="carrier-option selected" onclick="selectCarrier(this, 'dhl')">
+                            <div class="carrier-logo">DHL</div>
+                            <div>DHL Express</div>
+                        </div>
+                        <div class="carrier-option" onclick="selectCarrier(this, 'fedex')">
+                            <div class="carrier-logo">FEDEX</div>
+                            <div>FedEx</div>
+                        </div>
+                        <div class="carrier-option" onclick="selectCarrier(this, 'ups')">
+                            <div class="carrier-logo">UPS</div>
+                            <div>UPS</div>
+                        </div>
+                        <div class="carrier-option" onclick="selectCarrier(this, 'local')">
+                            <div class="carrier-logo">UG</div>
+                            <div>Local Partner</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Package Weight (kg)</label>
+                    <input type="number" class="form-input" value="0.5" min="0.1" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Package Dimensions (cm)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" class="form-input" placeholder="Length" value="15">
+                        <input type="number" class="form-input" placeholder="Width" value="10">
+                        <input type="number" class="form-input" placeholder="Height" value="5">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Special Instructions (Optional)</label>
+                    <textarea class="form-textarea" placeholder="Add handling instructions...">Fragile - Handle with care</textarea>
+                </div>
+                
+                <button class="generate-btn" onclick="generateLabel()">
+                    Generate Return Label
+                </button>
+            </div>
+            
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <h2 class="section-title">Label Preview</h2>
+                
+                <div class="label-preview">
+                    <div class="preview-header">
+                        <div class="preview-title">UGMarket Return Label</div>
+                        <div class="preview-subtitle">Valid for 7 days from issue</div>
+                    </div>
+                    
+                    <div class="preview-content">
+                        <div class="preview-row">
+                            <span class="preview-label">Return ID:</span>
+                            <span class="preview-value">#UGR-2841</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">From:</span>
+                            <span class="preview-value">James K., Kampala</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">To:</span>
+                            <span class="preview-value">GadgetHub Uganda, Shop 45, Garden City Mall</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Carrier:</span>
+                            <span class="preview-value">DHL Express</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Product:</span>
+                            <span class="preview-value">iPhone 12 Pro Max</span>
+                        </div>
+                        
+                        <div class="barcode-placeholder">
+                            [BARCODE: UGR-2841-DHL-2023]
+                        </div>
+                        
+                        <div class="preview-row">
+                            <span class="preview-label">Instructions:</span>
+                            <span class="preview-value">Fragile - Handle with care</span>
+                        </div>
+                    </div>
+                    
+                    <div class="dropoff-info">
+                        <div class="dropoff-title">Drop-off Locations:</div>
+                        <ul class="dropoff-list">
+                            <li>DHL Service Center - Garden City</li>
+                            <li>UGMarket Hub - Acacia Mall</li>
+                            <li>DHL Office - Kampala Road</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn print-btn" onclick="printLabel()">
+                        Print Label
+                    </button>
+                    <button class="action-btn email-btn" onclick="emailLabel()">
+                        Email to Customer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Selected carrier
+        let selectedCarrier = 'dhl';
+        
+        // Select shipping carrier
+        function selectCarrier(element, carrier) {
+            // Remove selected class from all options
+            document.querySelectorAll('.carrier-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Update selected carrier
+            selectedCarrier = carrier;
+            
+            // Update preview
+            updatePreview();
+        }
+        
+        // Update label preview
+        function updatePreview() {
+            const carrierNames = {
+                'dhl': 'DHL Express',
+                'fedex': 'FedEx',
+                'ups': 'UPS',
+                'local': 'UG Logistics Partner'
+            };
+            
+            // Update carrier in preview
+            document.querySelector('.preview-content .preview-row:nth-child(4) .preview-value').textContent = carrierNames[selectedCarrier];
+            
+            // Update dropoff locations based on carrier
+            const dropoffList = document.querySelector('.dropoff-list');
+            
+            if (selectedCarrier === 'dhl') {
+                dropoffList.innerHTML = `
+                    <li>DHL Service Center - Garden City</li>
+                    <li>UGMarket Hub - Acacia Mall</li>
+                    <li>DHL Office - Kampala Road</li>
+                `;
+            } else if (selectedCarrier === 'fedex') {
+                dropoffList.innerHTML = `
+                    <li>FedEx Office - Lugogo</li>
+                    <li>UGMarket Hub - Victoria Mall</li>
+                    <li>FedEx Dropbox - Ntinda</li>
+                `;
+            } else if (selectedCarrier === 'ups') {
+                dropoffList.innerHTML = `
+                    <li>UPS Access Point - Kololo</li>
+                    <li>UGMarket Hub - Garden City</li>
+                    <li>UPS Center - Industrial Area</li>
+                `;
+            } else {
+                dropoffList.innerHTML = `
+                    <li>UGMarket Main Hub - Garden City</li>
+                    <li>Partner Location - Acacia Mall</li>
+                    <li>Partner Location - Oasis Mall</li>
+                    <li>Partner Location - Nakumatt Bukoto</li>
+                `;
+            }
+        }
+        
+        // Generate return label
+        function generateLabel() {
+            // Get form values
+            const weight = document.querySelector('input[type="number"]').value;
+            const length = document.querySelectorAll('input[type="number"]')[1].value;
+            const width = document.querySelectorAll('input[type="number"]')[2].value;
+            const height = document.querySelectorAll('input[type="number"]')[3].value;
+            const instructions = document.querySelector('textarea').value;
+            
+            // Validate inputs
+            if (!weight || weight <= 0) {
+                alert('Please enter a valid package weight.');
+                return;
+            }
+            
+            // Generate tracking number (in real app, this would come from API)
+            const trackingNumber = 'UG' + Math.floor(Math.random() * 1000000000);
+            
+            // Update preview with tracking info
+            const barcodeElement = document.querySelector('.barcode-placeholder');
+            barcodeElement.textContent = `TRACKING: ${trackingNumber}`;
+            
+            // Update instructions in preview
+            document.querySelector('.preview-content .preview-row:last-child .preview-value').textContent = instructions || 'None';
+            
+            // Show success message
+            alert('Return label generated successfully! Tracking number: ' + trackingNumber);
+            
+            // Enable action buttons
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.disabled = false;
+            });
+        }
+        
+        // Print label
+        function printLabel() {
+            alert('Opening print dialog...');
+            // In real implementation: window.print(); or generate PDF
+        }
+        
+        // Email label to customer
+        function emailLabel() {
+            const returnId = '#UGR-2841';
+            if (confirm(`Email return label for ${returnId} to customer?`)) {
+                alert('Return label has been emailed to customer successfully!');
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial carrier
+            updatePreview();
+            
+            // Disable action buttons until label is generated
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+        });
+    </script>
+</body>
+</html>

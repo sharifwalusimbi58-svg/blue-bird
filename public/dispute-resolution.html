@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispute Resolution - UGMarket</title>
+    <style>
+        /* ==== UGMarket Dispute Resolution Styles ==== */
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --dark: #2E2E2E;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --info: #17A2B8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: var(--dark);
+            padding: 20px;
+        }
+        
+        .dispute-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .dispute-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .dispute-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+        
+        .dispute-id {
+            background: var(--dark);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .back-btn {
+            padding: 8px 15px;
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-btn:hover {
+            background: var(--light-gray);
+        }
+        
+        /* Main Layout */
+        .dispute-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+        
+        /* Dispute Timeline */
+        .dispute-timeline {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        
+        .timeline-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding: 20px 0 20px 30px;
+            border-left: 2px solid #eee;
+            margin-left: 15px;
+        }
+        
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -10px;
+            top: 23px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        
+        .timeline-item.active .timeline-dot {
+            background: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255,107,1,0.3);
+        }
+        
+        .timeline-item.completed .timeline-dot {
+            background: var(--success);
+        }
+        
+        .timeline-content {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .timeline-message {
+            margin-bottom: 8px;
+        }
+        
+        .timeline-author {
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-style: italic;
+        }
+        
+        .timeline-author.seller {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .timeline-author.buyer {
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        .timeline-author.admin {
+            color: var(--info);
+            font-weight: 500;
+        }
+        
+        /* Evidence Section */
+        .evidence-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .evidence-item {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .evidence-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .evidence-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            background: var(--light-gray);
+        }
+        
+        .evidence-document {
+            padding: 15px;
+            text-align: center;
+            background: var(--light-gray);
+        }
+        
+        .evidence-caption {
+            padding: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        
+        /* Response Section */
+        .response-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-top: 25px;
+        }
+        
+        .response-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .response-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        
+        .response-textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,107,1,0.1);
+        }
+        
+        .upload-btn {
+            padding: 10px 15px;
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .upload-btn:hover {
+            background: var(--light-gray);
+        }
+        
+        .submit-btn {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background: #e55f00;
+        }
+        
+        /* Sidebar */
+        .dispute-sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .sidebar-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .sidebar-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .party-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--light-gray);
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .party-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .party-info {
+            flex-grow: 1;
+        }
+        
+        .party-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .party-role {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .contact-btn {
+            padding: 6px 12px;
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        
+        .contact-btn:hover {
+            background: rgba(255,107,1,0.1);
+        }
+        
+        .dispute-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-open {
+            background: #FFF3CD;
+            color: #856404;
+        }
+        
+        .status-under-review {
+            background: #CCE5FF;
+            color: #004085;
+        }
+        
+        .status-resolved {
+            background: #D4EDDA;
+            color: #155724;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            color: var(--gray);
+        }
+        
+        .info-value {
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .resolution-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .resolve-btn {
+            background: var(--success);
+            color: white;
+        }
+        
+        .resolve-btn:hover {
+            background: #218838;
+        }
+        
+        .escalate-btn {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .escalate-btn:hover {
+            background: #e0a800;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .modal-cancel {
+            background: #f0f0f0;
+            color: var(--dark);
+        }
+        
+        .modal-confirm {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .dispute-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .dispute-sidebar {
+                position: static;
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .evidence-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dispute-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dispute-container">
+        <!-- Header -->
+        <div class="dispute-header">
+            <div>
+                <h1 class="dispute-title">Dispute Resolution Center</h1>
+                <span class="dispute-id">Case #DIS-2023-0841</span>
+            </div>
+            <a href="seller-returns.html" class="back-btn">
+                ← Back to Returns
+            </a>
+        </div>
+        
+        <!-- Main Layout -->
+        <div class="dispute-layout">
+            <!-- Main Content -->
+            <div>
+                <!-- Timeline -->
+                <div class="dispute-timeline">
+                    <h2 class="timeline-title">Dispute Timeline</h2>
+                    
+                    <div class="timeline-item completed">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Oct 15, 2023 - 14:30</div>
+                            <div class="timeline-message">Return request submitted for faulty device</div>
+                            <div class="timeline-author buyer">James K. (Buyer)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item completed">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Oct 16, 2023 - 09:15</div>
+                            <div class="timeline-message">Return rejected: "Item shows signs of physical damage not covered under warranty"</div>
+                            <div class="timeline-author seller">GadgetHub Uganda (Seller)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item completed">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Oct 16, 2023 - 14:45</div>
+                            <div class="timeline-message">Dispute opened: "The damage was pre-existing and mentioned in my initial return request"</div>
+                            <div class="timeline-author buyer">James K. (Buyer)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item active">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Oct 17, 2023 - 10:30</div>
+                            <div class="timeline-message">UGMarket support has been assigned to review this case. Please submit any additional evidence within 48 hours.</div>
+                            <div class="timeline-author admin">UGMarket Support</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Evidence Section -->
+                <div class="evidence-section">
+                    <h2 class="timeline-title">Evidence Submitted</h2>
+                    
+                    <div class="evidence-grid">
+                        <div class="evidence-item">
+                            <img src="https://via.placeholder.com/300x200?text=Damage+1" class="evidence-image" alt="Damage evidence">
+                            <div class="evidence-caption">Screen damage photo</div>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <img src="https://via.placeholder.com/300x200?text=Damage+2" class="evidence-image" alt="Damage evidence">
+                            <div class="evidence-caption">Close-up of issue</div>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <div class="evidence-document">
+                                <i class="fas fa-file-pdf" style="font-size: 2rem; color: #dc3545;"></i>
+                                <div>Original receipt</div>
+                            </div>
+                            <div class="evidence-caption">Purchase proof</div>
+                        </div>
+                        
+                        <div class="evidence-item">
+                            <img src="https://via.placeholder.com/300x200?text=Packaging" class="evidence-image" alt="Packaging">
+                            <div class="evidence-caption">Original packaging</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Response Section -->
+                <div class="response-section">
+                    <h2 class="response-title">Add to Dispute</h2>
+                    <textarea class="response-textarea" placeholder="Provide additional information or respond to the other party..."></textarea>
+                    
+                    <div>
+                        <label class="upload-btn">
+                            <i class="fas fa-paperclip"></i>
+                            Add Photos or Documents
+                            <input type="file" style="display: none;" multiple accept="image/*,.pdf,.doc,.docx">
+                        </label>
+                    </div>
+                    
+                    <button class="submit-btn">Submit Response</button>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="dispute-sidebar">
+                <!-- Case Status -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Case Status</h3>
+                    <div class="dispute-status status-under-review">Under Review</div>
+                    
+                    <div class="info-item" style="margin-top: 15px;">
+                        <span class="info-label">Opened:</span>
+                        <span class="info-value">Oct 16, 2023</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Priority:</span>
+                        <span class="info-value">High</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Response Due:</span>
+                        <span class="info-value">Oct 19, 2023</span>
+                    </div>
+                </div>
+                
+                <!-- Parties Involved -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Parties Involved</h3>
+                    
+                    <div class="party-card">
+                        <div class="party-avatar">JK</div>
+                        <div class="party-info">
+                            <div class="party-name">James K.</div>
+                            <div class="party-role">Buyer</div>
+                        </div>
+                        <button class="contact-btn">Message</button>
+                    </div>
+                    
+                    <div class="party-card">
+                        <div class="party-avatar">GH</div>
+                        <div class="party-info">
+                            <div class="party-name">GadgetHub Uganda</div>
+                            <div class="party-role">Seller</div>
+                        </div>
+                        <button class="contact-btn">Message</button>
+                    </div>
+                    
+                    <div class="party-card">
+                        <div class="party-avatar" style="background: var(--info);">UM</div>
+                        <div class="party-info">
+                            <div class="party-name">UGMarket Support</div>
+                            <div class="party-role">Mediator</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Related Return -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Related Return</h3>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Return ID:</span>
+                        <span class="info-value">#UGR-2841</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Product:</span>
+                        <span class="info-value">iPhone 12 Pro Max</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Value:</span>
+                        <span class="info-value">UGX 3,450,000</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Reason:</span>
+                        <span class="info-value">Faulty device</span>
+                    </div>
+                </div>
+                
+                <!-- Resolution Actions -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Resolution Actions</h3>
+                    
+                    <div class="action-buttons">
+                        <button class="resolution-btn resolve-btn" onclick="showResolutionModal('resolve')">
+                            <i class="fas fa-check-circle"></i>
+                            Propose Resolution
+                        </button>
+                        <button class="resolution-btn escalate-btn" onclick="showResolutionModal('escalate')">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Escalate to UGMarket
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resolution Modal -->
+    <div class="modal-overlay" id="resolutionModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">Propose Resolution</h3>
+            <p id="modalMessage">You are about to propose a resolution for this dispute. This will be sent to both parties for approval.</p>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn modal-cancel" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn modal-confirm" onclick="handleResolution()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show resolution modal
+        function showResolutionModal(action) {
+            const modal = document.getElementById('resolutionModal');
+            const title = document.getElementById('modalTitle');
+            const message = document.getElementById('modalMessage');
+            
+            if (action === 'resolve') {
+                title.textContent = 'Propose Resolution';
+                message.textContent = 'You are about to propose a resolution for this dispute. This will be sent to both parties for approval.';
+            } else {
+                title.textContent = 'Escalate to UGMarket';
+                message.textContent = 'This will escalate the dispute to UGMarket support for final decision. This action cannot be undone.';
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('resolutionModal').style.display = 'none';
+        }
+        
+        // Handle resolution action
+        function handleResolution() {
+            const modal = document.getElementById('resolutionModal');
+            const title = document.getElementById('modalTitle').textContent;
+            
+            if (title.includes('Propose')) {
+                alert('Resolution proposal has been sent to both parties successfully!');
+            } else {
+                alert('Dispute has been escalated to UGMarket support for final decision.');
+            }
+            
+            closeModal();
+        }
+        
+        // Handle file upload
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    alert(`Added ${this.files.length} file(s) to upload`);
+                    // In real implementation, you would handle the file upload here
+                }
+            });
+        });
+        
+        // Handle response submission
+        document.querySelector('.submit-btn').addEventListener('click', function() {
+            const textarea = document.querySelector('.response-textarea');
+            if (textarea.value.trim() === '') {
+                alert('Please enter a response before submitting.');
+                return;
+            }
+            
+            alert('Your response has been added to the dispute timeline.');
+            textarea.value = '';
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('resolutionModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // Initialize evidence lightbox (simplified)
+        document.querySelectorAll('.evidence-item').forEach(item => {
+            item.addEventListener('click', function() {
+                alert('Opening evidence in lightbox view...');
+                // In real implementation, show modal with larger view
+            });
+        });
+    </script>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

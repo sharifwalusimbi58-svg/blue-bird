@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Product | UGMarket Seller</title>
+  <style>
+    /* ==== UGMarket Product Creation Styles ==== */
+    :root {
+      --primary: #FF6B01;
+      --secondary: #005F20;
+      --dark: #2E2E2E;
+      --gray: #6C757D;
+      --light-gray: #F8F9FA;
+      --danger: #DC3545;
+      --success: #28A745;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, Ubuntu, sans-serif;
+    }
+
+    body {
+      background-color: var(--light-gray);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      font-size: 1.8rem;
+      color: var(--dark);
+    }
+
+    .back-link {
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Form Layout */
+    .form-container {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    /* Form Elements */
+    .form-section { margin-bottom: 30px; }
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      color: var(--dark);
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 500; }
+    .form-label.required::after { content: '*'; color: var(--danger); margin-left: 4px; }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .form-control:focus { border-color: var(--primary); outline: none; }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 1em;
+    }
+    .form-note { font-size: 0.8rem; color: var(--gray); margin-top: 5px; }
+
+    /* Image Upload */
+    .image-upload {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .image-upload:hover { border-color: var(--primary); }
+    .upload-icon { font-size: 2rem; color: var(--gray); margin-bottom: 15px; }
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .preview-item {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      height: 120px;
+    }
+    .preview-image { width: 100%; height: 100%; object-fit: cover; }
+    .remove-image {
+      position: absolute;
+      top: 5px; right: 5px;
+      background: var(--danger);
+      color: white;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    /* Pricing Calculator */
+    .pricing-calculator {
+      background: #FFF0E6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 25px 0;
+    }
+    .calculator-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .calculator-label { font-weight: 500; }
+    .calculator-value { font-weight: 600; }
+    .calculator-total { border-top: 1px solid var(--primary); padding-top: 10px; margin-top: 10px; font-weight: 700; color: var(--primary); }
+
+    /* Commission Notice */
+    .commission-notice {
+      background: #FFF0E6;
+      border-left: 4px solid var(--primary);
+      padding: 15px;
+      margin: 25px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    .btn {
+      padding: 12px 25px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-outline { background: white; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-outline:hover { background: #FFF0E6; }
+    .btn-primary { background: var(--primary); color: white; border: none; }
+    .btn-primary:hover { background: #E05D00; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-actions { flex-direction: column-reverse; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-header">
+      <h1 class="page-title">Add New Product</h1>
+      <a href="seller-products.html" class="back-link">← Back to Products</a>
+    </div>
+
+    <form class="form-container" id="productForm" enctype="multipart/form-data">
+      <div class="form-grid">
+        <!-- Left Column -->
+        <div class="form-left">
+          <!-- Product Images -->
+          <div class="form-section">
+            <h2 class="section-title">Product Images</h2>
+            <div class="image-upload" id="imageUpload">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text">Click to upload product images</div>
+              <div class="upload-note">First image will be main display (max 5MB each)</div>
+            </div>
+            <input type="file" id="productImages" multiple accept="image/*" hidden>
+            <div class="preview-grid" id="imagePreview"></div>
+          </div>
+
+          <!-- Product Details -->
+          <div class="form-section">
+            <h2 class="section-title">Product Details</h2>
+            <div class="form-group">
+              <label for="productTitle" class="form-label required">Product Title</label>
+              <input type="text" id="productTitle" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="productCategory" class="form-label required">Category</label>
+              <select id="productCategory" class="form-control form-select" required>
+                <option value="">Select category</option>
+                <option value="electronics">Electronics</option>
+                <option value="phones">Phones & Tablets</option>
+                <option value="computers">Computers</option>
+                <option value="fashion">Fashion & Clothing</option>
+                <option value="home">Home & Garden</option>
+                <option value="vehicles">Vehicles & Spares</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="productCondition" class="form-label required">Condition</label>
+              <select id="productCondition" class="form-control form-select" required>
+                <option value="">Select condition</option>
+                <option value="new">Brand New</option>
+                <option value="used">Used - Like New</option>
+                <option value="good">Used - Good</option>
+                <option value="fair">Used - Fair</option>
+                <option value="refurbished">Refurbished</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="productDescription" class="form-label required">Description</label>
+              <textarea id="productDescription" class="form-control form-textarea" required></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="form-right">
+          <!-- Pricing -->
+          <div class="form-section">
+            <h2 class="section-title">Pricing & Inventory</h2>
+            <div class="form-group">
+              <label for="productPrice" class="form-label required">Price (UGX)</label>
+              <input type="number" id="productPrice" class="form-control" min="0" required>
+            </div>
+
+            <!-- Pricing Calculator -->
+            <div class="pricing-calculator">
+              <div class="calculator-row">
+                <span class="calculator-label">Your Price:</span>
+                <span class="calculator-value" id="displayPrice">UGX 0</span>
+              </div>
+              <div class="calculator-row">
+                <span class="calculator-label">UGMarket Fee (10%):</span>
+                <span class="calculator-value" id="displayFee">UGX 0</span>
+              </div>
+              <div class="calculator-row calculator-total">
+                <span class="calculator-label">You Earn:</span>
+                <span class="calculator-value" id="displayEarnings">UGX 0</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="productStock" class="form-label required">Stock Quantity</label>
+              <input type="number" id="productStock" class="form-control" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="productSku" class="form-label">SKU (Optional)</label>
+              <input type="text" id="productSku" class="form-control">
+            </div>
+          </div>
+
+          <!-- Shipping -->
+          <div class="form-section">
+            <h2 class="section-title">Shipping</h2>
+            <div class="form-group">
+              <label for="productWeight" class="form-label">Weight (kg)</label>
+              <input type="number" id="productWeight" class="form-control" step="0.1">
+            </div>
+            <div class="form-group">
+              <label for="shippingMethod" class="form-label required">Shipping Method</label>
+              <select id="shippingMethod" class="form-control form-select" required>
+                <option value="">Select method</option>
+                <option value="pickup">Buyer Pickup</option>
+                <option value="seller">Seller Arranges Delivery</option>
+                <option value="platform">UGMarket Delivery (+UGX 15,000)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="shippingLocation" class="form-label required">Location</label>
+              <select id="shippingLocation" class="form-control form-select" required>
+                <option value="">Select location</option>
+                <option value="kampala">Kampala</option>
+                <option value="wakiso">Wakiso</option>
+                <option value="mukono">Mukono</option>
+                <option value="jinja">Jinja</option>
+                <option value="mbarara">Mbarara</option>
+                <option value="gulu">Gulu</option>
+                <option value="nationwide">Nationwide</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Commission Notice -->
+          <div class="commission-notice">
+            <h3 class="notice-title">UGMarket Commission</h3>
+            <p>10% commission is deducted from each sale for platform services. Earnings shown reflect this.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" id="saveDraft" class="btn btn-outline">Save Draft</button>
+        <button type="submit" class="btn btn-primary">Publish Product</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const priceInput = document.getElementById("productPrice");
+      const displayPrice = document.getElementById("displayPrice");
+      const displayFee = document.getElementById("displayFee");
+      const displayEarnings = document.getElementById("displayEarnings");
+
+      // Price Calculator
+      priceInput.addEventListener("input", function () {
+        const price = parseFloat(this.value) || 0;
+        const fee = price * 0.1;
+        const earnings = price - fee;
+        displayPrice.textContent = `UGX ${price.toLocaleString()}`;
+        displayFee.textContent = `UGX ${fee.toLocaleString()}`;
+        displayEarnings.textContent = `UGX ${earnings.toLocaleString()}`;
+      });
+
+      // Image Upload Preview
+      const imageUpload = document.getElementById("imageUpload");
+      const productImages = document.getElementById("productImages");
+      const previewGrid = document.getElementById("imagePreview");
+
+      imageUpload.addEventListener("click", () => productImages.click());
+      productImages.addEventListener("change", () => {
+        previewGrid.innerHTML = "";
+        Array.from(productImages.files).forEach(file => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const div = document.createElement("div");
+            div.classList.add("preview-item");
+            div.innerHTML = `
+              <img src="${e.target.result}" class="preview-image">
+              <div class="remove-image">×</div>
+            `;
+            div.querySelector(".remove-image").addEventListener("click", () => div.remove());
+            previewGrid.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      // Save Draft (localStorage)
+      document.getElementById("saveDraft").addEventListener("click", () => {
+        const draft = {
+          title: document.getElementById("productTitle").value,
+          price: document.getElementById("productPrice").value,
+          category: document.getElementById("productCategory").value
+        };
+        localStorage.setItem("draftProduct", JSON.stringify(draft));
+        alert("Draft saved locally!");
+      });
+
+      // Form Submission
+      document.getElementById("productForm").addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("title", document.getElementById("productTitle").value);
+        formData.append("category", document.getElementById("productCategory").value);
+        formData.append("condition", document.getElementById("productCondition").value);
+        formData.append("description", document.getElementById("productDescription").value);
+        formData.append("price", document.getElementById("productPrice").value);
+        formData.append("stock", document.getElementById("productStock").value);
+        formData.append("sku", document.getElementById("productSku").value);
+        formData.append("weight", document.getElementById("productWeight").value);
+        formData.append("shippingMethod", document.getElementById("shippingMethod").value);
+        formData.append("shippingLocation", document.getElementById("shippingLocation").value);
+
+        // Attach all selected images
+        Array.from(productImages.files).forEach(file => {
+          formData.append("images", file);
+        });
+
+        try {
+          const res = await fetch("/api/products", {
+            method: "POST",
+            headers: { "Authorization": "Bearer " + localStorage.getItem("token") },
+            body: formData
+          });
+
+          if (res.ok) {
+            alert("Product submitted successfully!");
+            window.location.href = "seller-products.html";
+          } else {
+            const error = await res.json();
+            alert("Error: " + error.message);
+          }
+        } catch (err) {
+          alert("Network error: " + err.message);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

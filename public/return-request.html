@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Return - UGMarket</title>
+    <style>
+        /* ==== UGMarket Return Request Styles ==== */
+        :root {
+            --primary: #FF6B01;
+            --secondary: #005F20;
+            --dark: #2E2E2E;
+            --gray: #6C757D;
+            --light-gray: #F8F9FA;
+            --danger: #DC3545;
+            --success: #28A745;
+            --warning: #FFC107;
+            --info: #17A2B8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: var(--dark);
+            padding: 20px;
+        }
+        
+        .return-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .return-header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .return-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .return-header p {
+            opacity: 0.9;
+        }
+        
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background: var(--light-gray);
+            position: relative;
+        }
+        
+        .progress-step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            color: var(--gray);
+        }
+        
+        .step-active .step-number {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .step-complete .step-number {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .step-active .step-label,
+        .step-complete .step-label {
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            position: absolute;
+            top: 47px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: #ddd;
+            z-index: 1;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        /* Form Content */
+        .return-content {
+            padding: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,107,1,0.1);
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .required {
+            color: var(--danger);
+        }
+        
+        /* Order Products */
+        .order-products {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .product-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-item:hover {
+            background: var(--light-gray);
+        }
+        
+        .product-item.selected {
+            background: rgba(255,107,1,0.1);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .product-check {
+            margin-right: 15px;
+        }
+        
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .product-info {
+            flex-grow: 1;
+        }
+        
+        .product-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* File Upload */
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+        }
+        
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+        
+        .upload-text {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        .upload-hint {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .upload-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .upload-item {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .upload-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .upload-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220,53,69,0.8);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+        
+        /* Navigation */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-prev {
+            background: white;
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+        
+        .btn-prev:hover {
+            background: var(--light-gray);
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-next:hover,
+        .btn-submit:hover {
+            background: #e55f00;
+        }
+        
+        /* Summary */
+        .return-summary {
+            background: var(--light-gray);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .summary-label {
+            color: var(--gray);
+        }
+        
+        .summary-value {
+            font-weight: 500;
+        }
+        
+        .summary-total {
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .progress-steps {
+                padding: 15px 20px;
+            }
+            
+            .step-label {
+                font-size: 0.7rem;
+            }
+            
+            .return-content {
+                padding: 20px;
+            }
+            
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .product-check {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .product-image {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .form-navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-container">
+        <!-- Header -->
+        <div class="return-header">
+            <h1>Request a Return</h1>
+            <p>Start the return process for your UGMarket order</p>
+        </div>
+        
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="progress-step step-complete">
+                <div class="step-number">1</div>
+                <div class="step-label">Order Details</div>
+            </div>
+            <div class="progress-step step-active">
+                <div class="step-number">2</div>
+                <div class="step-label">Return Info</div>
+            </div>
+            <div class="progress-step">
+                <div class="step-number">3</div>
+                <div class="step-label">Review</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 33%;"></div>
+            </div>
+        </div>
+        
+        <!-- Form Content -->
+        <div class="return-content">
+            <!-- Section 1: Order Details -->
+            <div class="form-section active" id="section-order">
+                <h2 class="section-title">Select Order & Product</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Order Number <span class="required">*</span></label>
+                    <input type="text" class="form-input" placeholder="e.g., UGM-123456" value="UGM-2841">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Select Product to Return <span class="required">*</span></label>
+                    <div class="order-products">
+                        <div class="product-item selected">
+                            <div class="product-check">
+                                <input type="radio" name="returnProduct" checked>
+                            </div>
+                            <img src="https://via.placeholder.com/100?text=iPhone" class="product-image" alt="iPhone 12 Pro Max">
+                            <div class="product-info">
+                                <div class="product-name">iPhone 12 Pro Max - 256GB</div>
+                                <div class="product-price">UGX 3,450,000</div>
+                            </div>
+                        </div>
+                        
+                        <div class="product-item">
+                            <div class="product-check">
+                                <input type="radio" name="returnProduct">
+                            </div>
+                            <img src="https://via.placeholder.com/100?text=Case" class="product-image" alt="Phone Case">
+                            <div class="product-info">
+                                <div class="product-name">Premium Silicone Case</div>
+                                <div class="product-price">UGX 85,000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-navigation">
+                    <div></div> <!-- Empty div for spacing -->
+                    <button class="nav-btn btn-next" onclick="showSection('section-reason', 66)">Continue</button>
+                </div>
+            </div>
+            
+            <!-- Section 2: Return Reason -->
+            <div class="form-section" id="section-reason">
+                <h2 class="section-title">Return Details</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Reason for Return <span class="required">*</span></label>
+                    <select class="form-select">
+                        <option value="">Select a reason</option>
+                        <option selected>Faulty or defective item</option>
+                        <option>Wrong item received</option>
+                        <option>Item not as described</option>
+                        <option>Changed my mind (within 7 days)</option>
+                        <option>Damaged during delivery</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Additional Details</label>
+                    <textarea class="form-textarea" placeholder="Please provide more information about the issue...">The phone screen has dead pixels and the battery drains very fast.</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload Evidence (Photos)</label>
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">Click to upload or drag & drop</div>
+                        <div class="upload-hint">Maximum 3 photos (JPG, PNG, max 5MB each)</div>
+                        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;" onchange="handleFileUpload(this.files)">
+                    </div>
+                    
+                    <div class="upload-preview" id="uploadPreview">
+                        <div class="upload-item">
+                            <img src="https://via.placeholder.com/100?text=Photo1" alt="Preview">
+                            <div class="upload-remove" onclick="removeImage(this)">×</div>
+                        </div>
+                        <div class="upload-item">
+                            <img src="https://via.placeholder.com/100?text=Photo2" alt="Preview">
+                            <div class="upload-remove" onclick="removeImage(this)">×</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-navigation">
+                    <button class="nav-btn btn-prev" onclick="showSection('section-order', 33)">Back</button>
+                    <button class="nav-btn btn-next" onclick="showSection('section-review', 100)">Continue</button>
+                </div>
+            </div>
+            
+            <!-- Section 3: Review -->
+            <div class="form-section" id="section-review">
+                <h2 class="section-title">Review Your Return Request</h2>
+                
+                <div class="return-summary">
+                    <h3 style="margin-bottom: 15px;">Return Summary</h3>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Order Number:</span>
+                        <span class="summary-value">UGM-2841</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Product:</span>
+                        <span class="summary-value">iPhone 12 Pro Max - 256GB</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Reason:</span>
+                        <span class="summary-value">Faulty or defective item</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Refund Amount:</span>
+                        <span class="summary-value">UGX 3,450,000</span>
+                    </div>
+                    
+                    <div class="summary-item summary-total">
+                        <span class="summary-label">Estimated Refund:</span>
+                        <span class="summary-value">UGX 3,450,000</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Preferred Refund Method</label>
+                    <select class="form-select">
+                        <option>Mobile Money (Recommended)</option>
+                        <option>Bank Transfer</option>
+                        <option>UGMarket Wallet Credit</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" required>
+                        I agree to the <a href="#" style="color: var(--primary);">UGMarket Return Policy</a>
+                    </label>
+                </div>
+                
+                <div class="form-navigation">
+                    <button class="nav-btn btn-prev" onclick="showSection('section-reason', 66)">Back</button>
+                    <button class="nav-btn btn-submit" onclick="submitReturn()">Submit Return Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show/hide form sections
+        function showSection(sectionId, progress) {
+            // Hide all sections
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update progress
+            document.querySelector('.progress-fill').style.width = progress + '%';
+            
+            // Update active step
+            document.querySelectorAll('.progress-step').forEach(step => {
+                step.classList.remove('step-active');
+            });
+            
+            if (sectionId === 'section-order') {
+                document.querySelectorAll('.progress-step')[0].classList.add('step-active');
+            } else if (sectionId === 'section-reason') {
+                document.querySelectorAll('.progress-step')[1].classList.add('step-active');
+            } else {
+                document.querySelectorAll('.progress-step')[2].classList.add('step-active');
+            }
+        }
+        
+        // Handle product selection
+        document.querySelectorAll('.product-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.product-item').forEach(i => {
+                    i.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+        
+        // Handle file upload
+        function handleFileUpload(files) {
+            const preview = document.getElementById('uploadPreview');
+            
+            if (files.length > 0) {
+                // In a real app, you would process and preview the files here
+                // This is a simplified version for demonstration
+                
+                // Show message if more than 3 files
+                if (files.length > 3) {
+                    alert('Maximum 3 photos allowed. Please select fewer files.');
+                    return;
+                }
+                
+                // Clear existing previews (in a real app, you might want to append)
+                preview.innerHTML = '';
+                
+                // Add preview for each file
+                for (let i = 0; i < Math.min(files.length, 3); i++) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const item = document.createElement('div');
+                        item.className = 'upload-item';
+                        item.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview">
+                            <div class="upload-remove" onclick="removeImage(this)">×</div>
+                        `;
+                        preview.appendChild(item);
+                    };
+                    reader.readAsDataURL(files[i]);
+                }
+            }
+        }
+        
+        // Remove uploaded image
+        function removeImage(element) {
+            element.parentElement.remove();
+        }
+        
+        // Submit return request
+        function submitReturn() {
+            // Validate form
+            const agreeCheckbox = document.querySelector('input[type="checkbox"]');
+            if (!agreeCheckbox.checked) {
+                alert('Please agree to the return policy before submitting.');
+                return;
+            }
+            
+            // In a real app, you would submit the form data to your server
+            // This is a simplified success message
+            alert('Return request submitted successfully! Your request will be processed within 24 hours.');
+            
+            // Redirect or show success message
+            // window.location.href = 'return-confirmation.html';
+        }
+        
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any initialization code would go here
+        });
+    </script>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
